@@ -45,8 +45,8 @@ player_g.add(player)
 astronaut = pygame.sprite.GroupSingle()
 astronaut.add(Astronaut())
 
-asteroid = pygame.sprite.Group()
-asteroid.add(Asteroid(1, (400, 200), pygame.image.load('graphics/asteroids/asteroid_big.png').convert_alpha(), Vector2(0)))
+asteroid_group = pygame.sprite.Group()
+asteroid_group.add(Asteroid(2))
 
 
 
@@ -59,6 +59,7 @@ center_rot_x = 250
 center_rot_y = 300
 rocket_angle = 0
 rocket_calc = [radius, angle, omega, center_rot_x, center_rot_y, rocket_angle]
+
 
 
 def rocket_circle(rocket_calc):
@@ -80,7 +81,9 @@ def rocket_circle(rocket_calc):
 
     return [radius,angle, omega, center_rot_x, center_rot_y , rocket_angle]
 
-
+timer_interval = 1000 # 1sec
+timer_event_id = pygame.USEREVENT + 1
+pygame.time.set_timer(timer_event_id, timer_interval)
 
 while True:
     for event in pygame.event.get():
@@ -94,23 +97,32 @@ while True:
                     laser_group.add(player.laser())
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                #if event.type == timer_event_id:
+                    #do something
+
         else: 
             #rocket_rect = rocket_surf.get_rect(center = (400, 200))
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: 
                 running = True
+        
+
         
     if running:
         screen.blit(background_surf, background_rect)
         screen.blit(rocket_surf, rocket_rect)
         screen.blit(astro_surf, astro_rect)
 
-        asteroid.draw(screen)
+        asteroid_group.add(Asteroid(2))
+
+        asteroid_group.draw(screen)
         player_g.draw(screen)
         laser_group.draw(screen)
         astronaut.draw(screen)
+
         player_g.update()
         laser_group.update()
         astronaut.update()
+        asteroid_group.update()
         
     else:
         screen.blit(start_surf, start_rect)
