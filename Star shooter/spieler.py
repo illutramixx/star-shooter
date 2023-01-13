@@ -10,6 +10,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.rocket.get_rect(center = (400, 200))
         self.image = self.rocket
         self.speed = 5
+        self.heart = 3
     
     def player_input(self):
         keys = pygame.key.get_pressed()
@@ -21,6 +22,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.y -= self.speed
         if keys[pygame.K_d] and self.rect.right <= 500:
             self.rect.x += self.speed
+
+   # def life(self):
 
 
     def update(self):

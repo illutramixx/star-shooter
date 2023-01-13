@@ -9,9 +9,8 @@ class Laser(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y -= 10
-        self.destroy()
+        
         
 
     def destroy(self):
-        if self.rect.y <= -100:
-            self.kill()
+        self.kill()

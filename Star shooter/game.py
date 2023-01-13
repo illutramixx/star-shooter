@@ -39,16 +39,15 @@ astro_surf = pygame.image.load('graphics/astronaut/astronaut.png')
 astro_rect = astro_surf.get_rect(center = (300,300))
 
 player = Player()
-player_g = pygame.sprite.Group()
+player_g = pygame.sprite.GroupSingle()
 player_g.add(player)
+life = 3
 
-astronaut = pygame.sprite.GroupSingle()
+astronaut = pygame.sprite.Group()
 astronaut.add(Astronaut())
 
 asteroid_group = pygame.sprite.Group()
-asteroid_group.add(Asteroid(2))
-
-
+asteroid_group.add(Asteroid())
 
 laser_group = pygame.sprite.Group()
 
@@ -59,6 +58,14 @@ center_rot_x = 250
 center_rot_y = 300
 rocket_angle = 0
 rocket_calc = [radius, angle, omega, center_rot_x, center_rot_y, rocket_angle]
+
+
+def collision_player_asteroid(life):  # Collision Between Player and Asteroid
+    if pygame.sprite.spritecollide(player_g.sprite, asteroid_group, False):
+        asteroid_group.empty()
+        return life -1
+    else: return life
+
 
 
 
@@ -81,6 +88,19 @@ def rocket_circle(rocket_calc):
 
     return [radius,angle, omega, center_rot_x, center_rot_y , rocket_angle]
 
+#Lebensanzeige vom Spieler 
+
+#heart_surf = pygame.image.load('graphics/heart.png')
+def life_player():
+    life_txt = 'graphics/heart' + str(life) + '.png'
+    heart_surf = pygame.image.load(life_txt)
+    heart_rect = start_surf.get_rect(center = (670, 1170))
+    screen.blit(heart_surf, heart_rect)
+    print('lol')
+
+
+
+
 timer_interval = 1000 # 1sec
 timer_event_id = pygame.USEREVENT + 1
 pygame.time.set_timer(timer_event_id, timer_interval)
@@ -97,8 +117,10 @@ while True:
                     laser_group.add(player.laser())
                 if event.key == pygame.K_ESCAPE:
                     running = False
-                #if event.type == timer_event_id:
-                    #do something
+            if event.type == timer_event_id:
+                #do something ->A spawn Asteroid
+                asteroid_group.add(Asteroid())
+                
 
         else: 
             #rocket_rect = rocket_surf.get_rect(center = (400, 200))
@@ -108,11 +130,13 @@ while True:
 
         
     if running:
+        
         screen.blit(background_surf, background_rect)
         screen.blit(rocket_surf, rocket_rect)
         screen.blit(astro_surf, astro_rect)
 
-        asteroid_group.add(Asteroid(2))
+        
+        life_player()
 
         asteroid_group.draw(screen)
         player_g.draw(screen)
@@ -123,6 +147,9 @@ while True:
         laser_group.update()
         astronaut.update()
         asteroid_group.update()
+       
+        life = collision_player_asteroid(life)
+        if(life <= 0): running = False
         
     else:
         screen.blit(start_surf, start_rect)
