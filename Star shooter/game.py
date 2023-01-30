@@ -51,13 +51,7 @@ asteroid_group.add(Asteroid())
 
 laser_group = pygame.sprite.Group()
 
-radius = 150
-angle = math.radians(45)
-omega = 0.01 # angular velocity
-center_rot_x = 250
-center_rot_y = 300
-rocket_angle = 0
-rocket_calc = [radius, angle, omega, center_rot_x, center_rot_y, rocket_angle]
+
 
 
 def collision_player_asteroid(life):  # Collision Between Player and Asteroid
@@ -67,37 +61,28 @@ def collision_player_asteroid(life):  # Collision Between Player and Asteroid
     else: return life
 
 
+# Function Collision between Asteroid and Laser
+def collision_laser_asteroid():
+    # Iterate through laser_group
+    for laser in laser_group.sprites():   
+        #Iterate through asteroid_group
+        for asteroid in asteroid_group:
+            # check if both sprites collided
+            if pygame.sprite.collide_rect(laser, asteroid):
+                #destroy both sprites
+                laser.kill()
+                asteroid.kill()
 
-
-def rocket_circle(rocket_calc):
-    radius = rocket_calc[0]
-    angle = rocket_calc[1]
-    omega = rocket_calc[2]
-    center_rot_x = rocket_calc[3]
-    center_rot_y = rocket_calc[4]
-    rocket_angle = rocket_calc[5]
-    rocket_angle += 0.65
-
-    x = center_rot_x + radius * math.cos(angle)
-    y = center_rot_y -  radius * math.sin(angle)
-    
-    screen.blit(pygame.transform.rotozoom(rocket_surf, rocket_angle, 1), rocket_surf.get_rect(center = (x, y)))
-    angle = angle + omega
-    x = x + radius * omega * math.cos(angle + math.pi/2)
-    y = y - radius * omega * math.sin(angle + math.pi/2)
-
-    return [radius,angle, omega, center_rot_x, center_rot_y , rocket_angle]
+            
+        
 
 #Lebensanzeige vom Spieler 
-
-#heart_surf = pygame.image.load('graphics/heart.png')
 def life_player():
     life_txt = 'graphics/heart' + str(life) + '.png'
     heart_surf = pygame.image.load(life_txt)
     heart_rect = start_surf.get_rect(center = (670, 1170))
     screen.blit(heart_surf, heart_rect)
     print('lol')
-
 
 
 
@@ -120,8 +105,6 @@ while True:
             if event.type == timer_event_id:
                 #do something ->A spawn Asteroid
                 asteroid_group.add(Asteroid())
-                
-
         else: 
             #rocket_rect = rocket_surf.get_rect(center = (400, 200))
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: 
@@ -149,12 +132,13 @@ while True:
         asteroid_group.update()
        
         life = collision_player_asteroid(life)
+        collision_laser_asteroid()
         if(life <= 0): running = False
         
     else:
         screen.blit(start_surf, start_rect)
         screen.blit(title_surf, title_rect)
-        rocket_calc = rocket_circle(rocket_calc)
+        #rocket_calc = rocket_circle(rocket_calc)
 
     pygame.display.update()
     clock.tick(60) # loop nicht schnelles als 60*mal pro sec
@@ -162,3 +146,31 @@ while True:
 
 
 
+
+# radius = 150
+# angle = math.radians(45)
+# omega = 0.01 # angular velocity
+# center_rot_x = 250
+# center_rot_y = 300
+# rocket_angle = 0
+# rocket_calc = [radius, angle, omega, center_rot_x, center_rot_y, rocket_angle]
+
+
+# def rocket_circle(rocket_calc):
+#     radius = rocket_calc[0]
+#     angle = rocket_calc[1]
+#     omega = rocket_calc[2]
+#     center_rot_x = rocket_calc[3]
+#     center_rot_y = rocket_calc[4]
+#     rocket_angle = rocket_calc[5]
+#     rocket_angle += 0.65
+
+#     x = center_rot_x + radius * math.cos(angle)
+#     y = center_rot_y -  radius * math.sin(angle)
+    
+#     screen.blit(pygame.transform.rotozoom(rocket_surf, rocket_angle, 1), rocket_surf.get_rect(center = (x, y)))
+#     angle = angle + omega
+#     x = x + radius * omega * math.cos(angle + math.pi/2)
+#     y = y - radius * omega * math.sin(angle + math.pi/2)
+
+#     return [radius,angle, omega, center_rot_x, center_rot_y , rocket_angle]

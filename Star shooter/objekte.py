@@ -1,8 +1,11 @@
 import random
 import pygame
 from pygame.math import Vector2
+import math
 
 class Asteroid(pygame.sprite.Sprite):
+    MIN_SPEED = 1
+    MAX_SPEED = 3
 
 
     def __init__(self):
@@ -15,12 +18,23 @@ class Asteroid(pygame.sprite.Sprite):
         self.asteroids = [ast_big,ast_medium,ast_small]
         self.asteroids_index = random.randrange(2)
 
-
+        self.x = random.randrange(500)
+        self.y = random.randrange(500)
         self.image = self.asteroids[self.asteroids_index]
-        self.rect = self.image.get_rect(center = (random.randrange(500), random.randrange(800)))
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+
+
+        self.speed = random.randint(1, 3)
+        self.angle = random.randrange(0, 360)
+
+
+    def update(self):
+        self.rect.x +=  self.speed * math.cos(self.angle)
+        self.rect.y += self.speed  * math.sin(self.angle)
   
 
-    # def update(self):
+
+       
        
        
         
